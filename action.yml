@@ -105,6 +105,11 @@ inputs:
     required: false
     default: ''
 
+  share_gist_expiration:
+    description: 'Time-to-live for shared gists (opengist provider only; GitHub Gists have no expiry). One of `1hour`, `12hours`, `1day`, `7days`, `15days`, or `never`. Defaults to `7days` — shared sessions are ephemeral CI artifacts. Set to `never` to keep them indefinitely.'
+    required: false
+    default: ''
+
   auto_compaction:
     description: 'Enable automatic context compaction when the conversation grows too large for the model context window. When enabled, Pi will summarize older messages to free up context space, allowing longer sessions without hitting context limits.'
     required: false
