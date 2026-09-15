@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.28.1] - 2026-09-15
+
+### Changed
+
+- **deps-ci**: bump github/codeql-action from 4.37.9 to 4.38.0 (#412)
+- **deps-dev**: bump vitest from 4.1.10 to 4.1.11 (#410)
+
+### Fixed
+
+- **opengist**: add default TTL for opengist uploads
+
 ## [2.28.0] - 2026-09-08
 
 ### Added
@@ -662,7 +673,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README link corrections
 - Codecov action updated, removed double build
 
-[unreleased]: https://github.com/shaftoe/pi-coding-agent-action/compare/v2.28.0...HEAD
+[unreleased]: https://github.com/shaftoe/pi-coding-agent-action/compare/v2.28.1...HEAD
+[2.28.1]: https://github.com/shaftoe/pi-coding-agent-action/compare/v2.28.0...v2.28.1
 [2.28.0]: https://github.com/shaftoe/pi-coding-agent-action/compare/v2.27.1...v2.28.0
 [2.27.1]: https://github.com/shaftoe/pi-coding-agent-action/compare/v2.27.0...v2.27.1
 [2.27.0]: https://github.com/shaftoe/pi-coding-agent-action/compare/v2.26.0...v2.27.0
