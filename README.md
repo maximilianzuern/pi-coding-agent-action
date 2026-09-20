@@ -120,6 +120,10 @@ jobs:
     if: startsWith(github.event.comment.body, '/pi ')
     runs-on: ubuntu-latest
     steps:
+
+      - name: Clone repository to work on
+        uses: actions/checkout@v7
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
@@ -166,7 +170,9 @@ jobs:
   review:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+
+      - name: Clone the repository to work on
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
@@ -223,7 +229,9 @@ jobs:
   review:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+
+      - name: Clone the repository to work on
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -273,7 +281,9 @@ jobs:
   review:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+
+      - name: Clone the repository to work on
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -325,7 +335,9 @@ jobs:
   dependency-audit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+
+      - name: Clone the repository to work on
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -366,7 +378,9 @@ jobs:
   docs-sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+
+      - name: Clone the repository to work on
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -418,7 +432,9 @@ jobs:
     if: github.event.assignee.login == 'my-pi-bot'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+
+      - name: Clone the repository to work on
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           # Check out the PR head branch when triggered from a PR
