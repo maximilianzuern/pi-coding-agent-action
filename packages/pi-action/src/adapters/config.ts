@@ -24,6 +24,9 @@ import {
   OPENGIST_EXPIRATIONS,
 } from '@alexanderfortin/pi-orchestrator';
 
+/** Valid values for the `cache_warming` input (mirrors the SDK's modes). */
+export const CACHE_WARMING_MODES = ['off', 'streaming', 'idle'] as const;
+
 // ---------------------------------------------------------------------------
 // Error message constants — keep stable; they are part of the public
 // contract documented in `action.yml` and surfaced to users in the
@@ -125,6 +128,20 @@ export function parseGistExpiration(raw: string): OpengistExpiration | undefined
     : undefined;
 }
 
+/**
+ * Parse the `cache_warming` input into a prompt cache-warming mode.
+ *
+ * Returns `undefined` for empty input (the SDK then applies its default,
+ * `"streaming"`) and for unrecognised values (a warning is emitted by the
+ * caller so a typo doesn't silently change behavior). Case-insensitive.
+ */
+export function parseCacheWarmingMode(raw: string): PiConfig['cacheWarming'] {
+  const normalized = raw.trim().toLowerCase();
+  return (CACHE_WARMING_MODES as readonly string[]).includes(normalized)
+    ? (normalized as PiConfig['cacheWarming'])
+    : undefined;
+}
+
 // ---------------------------------------------------------------------------
 // Validation
 // ---------------------------------------------------------------------------
@@ -187,6 +204,17 @@ export function gatherActionsConfig(): PiConfig {
   const exportSessionJsonl = parseBooleanInput(core.getInput('export_session_jsonl'), false);
   const autoCompaction = parseBooleanInput(core.getInput('auto_compaction'), false);
   const shareSession = parseBooleanInput(core.getInput('share_session'), false);
+
+  // --- Prompt cache warming -----------------------------------------------
+  const cacheWarmingRaw = core.getInput('cache_warming');
+  const cacheWarming = parseCacheWarmingMode(cacheWarmingRaw);
+  if (cacheWarmingRaw.trim() && !cacheWarming) {
+    core.warning(
+      `Unknown cache_warming "${cacheWarmingRaw.trim()}". ` +
+        `Valid values are: ${CACHE_WARMING_MODES.join(', ')}. ` +
+        'Falling back to the SDK default ("streaming").'
+    );
+  }
 
   // --- Session sharing storage backend inputs ---------------------------
   const shareGistProviderRaw = core.getInput('share_gist_provider').trim().toLowerCase();
@@ -251,6 +279,7 @@ export function gatherActionsConfig(): PiConfig {
     exportSessionHtml,
     exportSessionJsonl,
     autoCompaction,
+    ...(cacheWarming ? { cacheWarming } : {}),
     shareSession,
     ...(shareGistProvider ? { shareGistProvider } : {}),
     ...(shareGistApiUrl ? { shareGistApiUrl } : {}),

@@ -97,6 +97,30 @@ describe('gatherActionsConfig', () => {
       const config = gatherActionsConfig();
       expect(config.autoCompaction).toBe(false);
     });
+
+    test('cacheWarming defaults to undefined (SDK default "streaming")', () => {
+      const config = gatherActionsConfig();
+      expect(config.cacheWarming).toBeUndefined();
+    });
+  });
+
+  describe('cache_warming parsing', () => {
+    test('parses cache_warming idle', () => {
+      mockCore({ cache_warming: 'idle' });
+      expect(gatherActionsConfig().cacheWarming).toBe('idle');
+    });
+
+    test('parses cache_warming case-insensitively and trims whitespace', () => {
+      mockCore({ cache_warming: '  OFF ' });
+      expect(gatherActionsConfig().cacheWarming).toBe('off');
+    });
+
+    test('warns and falls back to undefined on unknown value', () => {
+      mockCore({ cache_warming: 'aggressive' });
+      const config = gatherActionsConfig();
+      expect(config.cacheWarming).toBeUndefined();
+      expect(coreMock.warning).toHaveBeenCalledWith(expect.stringContaining('cache_warming'));
+    });
   });
 
   describe('boolean input parsing', () => {

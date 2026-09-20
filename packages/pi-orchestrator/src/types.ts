@@ -6,6 +6,7 @@
  */
 
 import type { Temporal } from '@js-temporal/polyfill';
+import type { CacheWarmingMode } from '@earendil-works/pi-coding-agent';
 import type { CreateReactionType, PlatformProvider } from './platform';
 import type { OpengistExpiration } from './share/opengist';
 
@@ -228,6 +229,14 @@ export interface PiConfig extends DiffConfig {
   exportSessionHtml?: boolean;
   exportSessionJsonl?: boolean;
   autoCompaction?: boolean;
+  /**
+   * Prompt cache-warming mode (`"off"`, `"streaming"`, or `"idle"`).
+   *
+   * Keeps expensive prompt-cache prefixes alive during long tool runs
+   * (and, with `"idle"`, between prompts) using cost-aware one-token
+   * refreshes. `undefined` leaves the SDK default (`"streaming"`).
+   */
+  cacheWarming?: CacheWarmingMode;
   /**
    * Share the session like pi's `/share` command: upload the exported
    * HTML to a secret GitHub Gist and surface a pi.dev-style viewer link.

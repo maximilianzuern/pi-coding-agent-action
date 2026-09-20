@@ -1196,6 +1196,31 @@ describe('Agent', () => {
     });
   });
 
+  describe('cacheWarming', () => {
+    test('applies cache-warming mode when config.cacheWarming is set', async () => {
+      const { core: testCore, messages: infoMessages } = createCoreWithInfoCapture();
+
+      const agent = new Agent(testCore as any, mockPlatformProvider, {
+        ...defaultAgentConfig,
+        cacheWarming: 'idle',
+      });
+
+      await agent.ready();
+
+      expect(infoMessages).toContain('[cache-warming] mode set to "idle"');
+    });
+
+    test('does not set cache-warming mode when config.cacheWarming is undefined', async () => {
+      const { core: testCore, messages: infoMessages } = createCoreWithInfoCapture();
+
+      const agent = new Agent(testCore as any, mockPlatformProvider, defaultAgentConfig);
+
+      await agent.ready();
+
+      expect(infoMessages.some(msg => msg.includes('[cache-warming]'))).toBe(false);
+    });
+  });
+
   describe('session manager selection', () => {
     /**
      * Access the session manager's file path from a ready agent.

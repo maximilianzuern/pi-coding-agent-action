@@ -115,6 +115,11 @@ inputs:
     required: false
     default: 'false'
 
+  cache_warming:
+    description: 'Prompt cache-warming mode. Keeps expensive prompt-cache prefixes alive with cost-aware one-token refreshes so pauses (e.g. long tool runs) don\'t pay full input price again. One of `off`, `streaming` (refresh during long tool executions; the default), or `idle` (also refresh between prompts). Refreshes are billed as a cache read plus one output token and only fire when expected savings exceed the cost.'
+    required: false
+    default: ''
+
   pr_number:
     description: 'Pull request number to target. Use this with workflow_dispatch to run the agent on a specific PR without a triggering event. When set, the action fetches PR context and posts the result as a comment on the specified PR.'
     required: false

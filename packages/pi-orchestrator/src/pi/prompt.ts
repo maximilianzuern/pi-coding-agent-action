@@ -388,3 +388,27 @@ export const GET_WORKFLOW_RUN_LOGS_PARAM_RUN_ID_DESCRIPTION =
 
 export const GET_WORKFLOW_RUN_LOGS_PARAM_MAX_BYTES_DESCRIPTION =
   'Maximum total log bytes to return. Defaults to 51200 (50KB). Capped at 1048576 (1MB). Use for limiting very large log outputs.';
+
+//
+// Summarize Text
+//
+export const SUMMARIZE_TEXT_PROMPT_SNIPPET =
+  'Summarize long text with a separate LLM call, keeping the full text out of your own context. Use it to condense very long inputs (CI logs, big threads, large file dumps) before analyzing them.';
+
+export const SUMMARIZE_TEXT_PROMPT_GUIDELINES = [
+  'Use summarize_text when a text is too long to read in full (e.g. workflow logs, large comment threads) and you only need the key points.',
+  'Pass the raw text via `text` and optionally narrow the result with `focus` (e.g. "errors and their root causes") and `max_words`.',
+  'The summary is produced by a separate one-shot LLM call using the current session model; it does not consume your context window beyond the returned summary.',
+];
+
+export const SUMMARIZE_TEXT_DESCRIPTION =
+  'Summarize a long text with a separate one-shot LLM call (using the current session model) and return only the summary. Use this to condense very large inputs — CI logs, long threads, file dumps — without loading them fully into the conversation.';
+
+export const SUMMARIZE_TEXT_PARAM_TEXT_DESCRIPTION =
+  'The raw text to summarize. Can be very long; it is sent to the sub-call, not kept in your context.';
+
+export const SUMMARIZE_TEXT_PARAM_FOCUS_DESCRIPTION =
+  'Optional instruction for what the summary should focus on (e.g. "errors, root causes, and failed steps").';
+
+export const SUMMARIZE_TEXT_PARAM_MAX_WORDS_DESCRIPTION =
+  'Approximate maximum length of the summary in words. Defaults to 300.';

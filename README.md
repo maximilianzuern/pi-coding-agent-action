@@ -872,12 +872,31 @@ For complex, multi-step tasks that generate a lot of context (e.g. large code re
     auto_compaction: true
 ```
 
+### Prompt Cache Warming
+
+Providers expire prompt-cache entries after a period of inactivity, so a pause — for example a long tool execution in the middle of a code review — makes the next provider request pay full input price again. Cache warming re-sends the last request with a one-token output budget shortly before the cache entry expires, keeping the (much cheaper) cached prefix alive.
+
+The SDK's `streaming` mode (the default) protects prefixes during long tool executions. Set `cache_warming: idle` to also keep caches warm between prompts — useful when the action processes multiple comment-triggered prompts in one job. Refreshes are billed as a cache read plus one output token and only fire when the expected avoided cache-miss cost exceeds the refresh cost, so they never run at a loss:
+
+```yaml
+- uses: shaftoe/pi-coding-agent-action@v2
+  with:
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    provider: anthropic
+    model: claude-sonnet-4-5
+    token: ${{ secrets.ANTHROPIC_API_KEY }}
+    cache_warming: idle
+```
+
+Set `cache_warming: off` to disable warming entirely. Warming requires a known cache lifetime for the model (built in for direct Anthropic; custom models can declare `promptCache` in `models.json`).
+
 ## Inputs
 
 | Input | Description | Required | Default |
 |-------|-------------|----------|---------|
 | `auto_compaction` | Enable automatic context compaction when the conversation grows too large for the model's context window. Pi summarizes older messages to free up context space | No | `false` |
 | `base_url` | Optional override for the provider base URL (e.g., to route traffic through a proxy or use an OpenAI-compatible gateway) | No | - |
+| `cache_warming` | Prompt cache-warming mode: `off`, `streaming` (protect cache prefixes during long tool executions), or `idle` (also refresh between prompts). Refreshes cost a cache read + one output token and only fire when expected savings exceed the cost | No | `streaming` (SDK default) |
 | `branch_name_template` | Template for auto-generated branch names in `create_pull_request`. Supports variables: `{number}` (issue/PR number), `{timestamp}` (epoch ms), `{title}` (slugified PR title). Default: `pi/issue{number}-{timestamp}` | No | - |
 | `diff_ignore_patterns` | Space-separated list of file patterns to exclude from PR diffs by default (e.g. `dist/ package-lock.json`). The agent can still provide additional patterns at call time | No | - |
 | `diff_max_bytes` | Maximum diff size in bytes returned by the `get_pr_diff` tool | No | `102400` |
@@ -939,6 +958,7 @@ The action extends Pi with the following built-in GitHub tools:
 | `get_issue_or_pr_thread` | Retrieves the full thread of an issue or pull request including title, body, state, labels, branch info (for PRs), all comments, and review comments (inline comments on specific lines of the diff) for PRs. Useful for understanding the full context before making changes. |
 | `get_pr_diff` | Fetches the diff of a pull request on demand. Useful when the agent needs to understand what changed in a PR, e.g. for code reviews or addressing review feedback. Supports configurable `max_lines` truncation (default: 1000), max byte size cap (default: 100KB), and ignore patterns to filter out noisy paths. |
 | `get_workflow_run_logs` | Fetches job logs for a specific GitHub Actions workflow run to diagnose CI failures. Lists all jobs for a run and downloads their logs, truncated to 50KB by default (configurable via `max_bytes`). |
+| `summarize_text` | Summarizes very long text (CI logs, large threads, file dumps) with a separate one-shot LLM call using the current session model, returning only the summary — keeping the raw text out of the conversation context. Accepts `text`, an optional `focus` instruction, and `max_words`. |
 | `update_pull_request` | Updates an existing pull request by pushing new commits to the PR branch and optionally updating the title and/or description. Supports `dry_run` mode for testing without actual modifications. |
 
 > [!TIP]

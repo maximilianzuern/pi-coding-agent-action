@@ -263,6 +263,16 @@ export class Agent {
       this.logger.info('[auto-compaction] enabled');
     }
 
+    // Apply the prompt cache-warming mode when explicitly configured. The
+    // SDK already defaults to "streaming" (protect prefixes during long
+    // tool runs); "off" disables it and "idle" also refreshes between
+    // prompts. Refreshes are billed as a cache read + one output token and
+    // only fire when the expected savings clear the SDK's cost threshold.
+    if (this.config.cacheWarming) {
+      session.setCacheWarmingMode(this.config.cacheWarming);
+      this.logger.info(`[cache-warming] mode set to "${this.config.cacheWarming}"`);
+    }
+
     // Validate that all requested tool names actually exist after extensions
     // are loaded. This provides early, actionable errors instead of silently
     // dropping unknown names.
