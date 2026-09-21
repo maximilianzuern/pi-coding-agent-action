@@ -116,7 +116,7 @@ inputs:
     default: 'false'
 
   cache_warming:
-    description: 'Prompt cache-warming mode. Keeps expensive prompt-cache prefixes alive with cost-aware one-token refreshes so pauses (e.g. long tool runs) don\'t pay full input price again. One of `off`, `streaming` (refresh during long tool executions; the default), or `idle` (also refresh between prompts). Refreshes are billed as a cache read plus one output token and only fire when expected savings exceed the cost.'
+    description: 'Prompt cache-warming mode. Keeps expensive prompt-cache prefixes alive with cost-aware one-token refreshes so pauses (e.g. long tool runs) don''t pay full input price again. One of `off`, `streaming` (refresh during long tool executions; the default), or `idle` (also refresh between prompts). Refreshes are billed as a cache read plus one output token and only fire when expected savings exceed the cost.'
     required: false
     default: ''
 
