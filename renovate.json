@@ -9,6 +9,7 @@
   "timezone": "Europe/Zurich",
   "schedule": ["* 5 * * 1"],
   "labels": ["dependencies", "automated"],
+  "gitAuthor": "Alexander Fortin <shaftoe@users.noreply.github.com>",
   "rangeStrategy": "update-lockfile",
   "lockFileMaintenance": {
     "enabled": true,
@@ -24,7 +25,7 @@
     {
       "description": "Group @earendil-works Pi SDK packages — they share a version scheme and should move together",
       "groupName": "Pi SDK",
-      "matchPackagePatterns": ["^@earendil-works/"]
+      "matchPackageNames": ["/^@earendil-works//"]
     },
     {
       "description": "Group GitHub Actions updates",
