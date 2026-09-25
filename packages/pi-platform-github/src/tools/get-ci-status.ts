@@ -65,7 +65,7 @@ async function resolveHeadSha(
   const issue = deps.context.payload.issue as { pull_request?: unknown } | undefined;
   const isPRComment = issue?.pull_request !== undefined;
 
-  // Use the given PR, else the current PR. 
+  // Use the given PR, else the current PR.
   // Not the context SHA: on PR events it is the temporary merge commit, which has no CI runs.
   let pullNumber = params.pull_number;
   if (!pullNumber && (isPR(deps) || isPRComment)) {
